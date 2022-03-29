@@ -1,10 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import params from './src/params';
+
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      
+      <Text>Iniciando o Mines!</Text>
+      <Text>Tamanho da grade: {params.getRowsAmount()} X {params.getColumnsAmount()} </Text>
       <StatusBar style="auto" />
     </View>
   );
