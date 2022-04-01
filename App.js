@@ -3,7 +3,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import params from './src/params';
 import Field from './src/components/Field';
 
-
 export default function App() {
   return (
     <View style={styles.container}>
@@ -11,6 +10,8 @@ export default function App() {
       
       <Text>Iniciando o Mines!</Text>
       <Text>Tamanho da grade: {params.getRowsAmount()} X {params.getColumnsAmount()} </Text>
+
+
       <Field/>
       <Field opened/>
       <Field opened  nearMines={1}/>
@@ -20,6 +21,8 @@ export default function App() {
       <Field mined />
       <Field mined opened />
       <Field mined opened exploded/>
+      <Field flagged/>
+      <Field flagged opened/>
     </View>
   );
 }
@@ -30,5 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#F5FCFF'
   },
 });
