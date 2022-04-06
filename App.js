@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import params from './src/params';
 import MineField from './src/components/MineField';
-import { createMinedBoard } from './src/functions';
+import { createMinedBoard, cloneBoard, openField, hadExplosion, showMines, wonGame } from './src/functions';
 
 
 export default function App() {
@@ -19,10 +19,30 @@ export default function App() {
     const rows = params.getRowsAmount()
     return {
       board : createMinedBoard(rows, cols, minesAmount()),
+      won: false,
+      lost: false
     }
   }
-  
   const [states, setstates] = useState(createState())
+
+  onOpenField = (row, column)=>{
+    const board = cloneBoard(states.board)
+    openField(board, row, column)
+    const lost = hadExplosion(board)
+    const won = wonGame(board)
+
+    if(lost){
+      showMines(board)
+      Alert.alert('Perdeuuu !!!!', 'Errou')
+    }
+
+    if(won){
+      Alert.alert('Parabéns','Você ganhou!!!')
+    }
+
+    setstates({board, lost, won})
+  }
+
 
   return (
     <View style={styles.container}>
@@ -31,7 +51,8 @@ export default function App() {
       <Text>Iniciando o Mines!</Text>
       <Text>Tamanho da grade: {params.getRowsAmount()} X {params.getColumnsAmount()} </Text>
       <View style={styles.board}>
-        <MineField board={states.board} />
+        <MineField board={states.board} 
+                  onOpenField={onOpenField} />
       </View>
     </View>
   )
