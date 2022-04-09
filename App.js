@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import params from './src/params';
 import MineField from './src/components/MineField';
-import { createMinedBoard, cloneBoard, openField, hadExplosion, showMines, wonGame } from './src/functions';
+import { createMinedBoard, cloneBoard, openField, hadExplosion, showMines, wonGame, invertFlag } from './src/functions';
 
 
 export default function App() {
@@ -43,6 +43,16 @@ export default function App() {
     setstates({board, lost, won})
   }
 
+  onSelectField = (row, column) => {
+    const board = cloneBoard(states.board)
+    invertFlag(board,row,column)
+    const won = wonGame(board)
+
+    if(won){
+      Alert.alert('Parabéns', 'você ganhou!!!')
+    }
+    setstates({board, won})
+  }
 
   return (
     <View style={styles.container}>
@@ -52,7 +62,8 @@ export default function App() {
       <Text>Tamanho da grade: {params.getRowsAmount()} X {params.getColumnsAmount()} </Text>
       <View style={styles.board}>
         <MineField board={states.board} 
-                  onOpenField={onOpenField} />
+                  onOpenField={onOpenField}
+                  onSelectField={onSelectField} />
       </View>
     </View>
   )
