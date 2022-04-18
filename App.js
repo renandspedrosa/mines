@@ -3,7 +3,18 @@ import { StyleSheet, Text, View, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import params from './src/params';
 import MineField from './src/components/MineField';
-import { createMinedBoard, cloneBoard, openField, hadExplosion, showMines, wonGame, invertFlag } from './src/functions';
+import { 
+    createMinedBoard,
+    cloneBoard, 
+    openField, 
+    hadExplosion, 
+    showMines, 
+    wonGame, 
+    invertFlag,
+    flagsUsed
+} from './src/functions';
+import Header from './src/components/Header';
+import LevelSelect from './src/screens/LevelSelect';
 
 
 export default function App() {
@@ -20,10 +31,11 @@ export default function App() {
     return {
       board : createMinedBoard(rows, cols, minesAmount()),
       won: false,
-      lost: false
+      lost: false,
+      showLevelSelection:false
     }
   }
-  const [states, setstates] = useState(createState())
+  let [states, setState] = useState(createState())
 
   onOpenField = (row, column)=>{
     const board = cloneBoard(states.board)
@@ -40,7 +52,7 @@ export default function App() {
       Alert.alert('Parabéns','Você ganhou!!!')
     }
 
-    setstates({board, lost, won})
+    setState({board, lost, won})
   }
 
   onSelectField = (row, column) => {
@@ -51,25 +63,36 @@ export default function App() {
     if(won){
       Alert.alert('Parabéns', 'você ganhou!!!')
     }
-    setstates({board, won})
+    setState({board, won})
   }
 
+  onLevelSelected = level => {
+      params.difficultLevel = level
+      setState(createState())
+  }
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      
-      <Text>Iniciando o Mines!</Text>
-      <Text>Tamanho da grade: {params.getRowsAmount()} X {params.getColumnsAmount()} </Text>
-      <View style={styles.board}>
+    <View style={estilo.container}>
+       <LevelSelect isVisible={states.showLevelSelection}
+                  onLevelSelected={onLevelSelected}
+                  onCalcel={()=>setState({showLevelSelection:false})}
+      /> 
+      <Header 
+        flagsLeft={minesAmount() - flagsUsed(states.board)}
+        onNewGame={()=>setState(createState())}
+        onFlagPress={()=> setState({showLevelSelection:true})}
+      />
+      <View style={estilo.board}>
         <MineField board={states.board} 
                   onOpenField={onOpenField}
-                  onSelectField={onSelectField} />
+                  onSelectField={onSelectField} 
+          />
       </View>
+      <StatusBar style="auto" />
     </View>
   )
 }
 
-const styles = StyleSheet.create({
+const estilo = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
